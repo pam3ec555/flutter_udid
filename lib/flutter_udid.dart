@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 
@@ -23,5 +25,30 @@ class FlutterUdid {
     var bytes = utf8.encode(udid);
     var digest = sha256.convert(bytes);
     return digest.toString();
+  }
+
+  /// Returns true if the UDID is saved.
+  static Future<bool> get isUDIDSaved async {
+    if (kIsWeb) {
+      return false;
+    }
+    if (!Platform.isIOS) {
+      return false;
+    }
+    final bool isUDIDSaved = await _channel.invokeMethod('isUDIDSaved');
+    return isUDIDSaved;
+  }
+
+  /// Clears the saved UDID from the keychain (iOS only).
+  /// Returns true if successfully cleared, false otherwise.
+  static Future<bool> clearUDID() async {
+    if (kIsWeb) {
+      return false;
+    }
+    if (!Platform.isIOS) {
+      return false;
+    }
+    final bool result = await _channel.invokeMethod('clearUDID');
+    return result;
   }
 }

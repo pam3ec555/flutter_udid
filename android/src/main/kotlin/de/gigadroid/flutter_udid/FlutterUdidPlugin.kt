@@ -35,6 +35,8 @@ class FlutterUdidPlugin : MethodCallHandler, FlutterPlugin {
             } else {
                 result.success(udid)
             }
+        } else if (call.method == "isUDIDSaved") {
+            result.success(false)
         } else {
             result.notImplemented()
         }
